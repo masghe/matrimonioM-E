@@ -1,0 +1,228 @@
+
+import React, { useState } from 'react';
+import { RsvpData, Language, translations } from '../types';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, Loader2, Info } from 'lucide-react';
+
+interface RsvpFormProps {
+  lang: Language;
+}
+
+const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
+  const t = translations[lang];
+  const [formData, setFormData] = useState<RsvpData>({
+    name: '',
+    email: '',
+    guests: 1,
+    adults: 1,
+    children: 0,
+    attending: 'yes',
+    dietaryRestrictions: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    if (name === 'attending') {
+      const isAttending = value === 'yes';
+      setFormData(prev => ({
+        ...prev,
+        attending: value as 'yes' | 'no',
+        // Se non partecipa, azzera tutto. Se torna a partecipare, imposta dei default sensati.
+        guests: isAttending ? (prev.guests === 0 ? 1 : prev.guests) : 0,
+        adults: isAttending ? (prev.adults === 0 ? 1 : prev.adults) : 0,
+        children: isAttending ? prev.children : 0,
+      }));
+      return;
+    }
+
+    const processedValue = e.target.type === 'number' || e.target.tagName === 'SELECT' ? 
+      (isNaN(parseInt(value)) ? value : parseInt(value)) 
+      : value;
+      
+    setFormData({
+      ...formData,
+      [name]: processedValue,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    
+    setTimeout(() => {
+      setStatus('success');
+      console.log('RSVP Data:', formData);
+    }, 1500);
+  };
+
+  const isDeclined = formData.attending === 'no';
+
+  if (status === 'success') {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-md mx-auto py-20 text-center px-6"
+      >
+        <div className="w-16 h-16 bg-olive-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-olive-600">
+          <Check className="w-8 h-8" />
+        </div>
+        <h3 className="text-3xl font-serif italic text-stone-800 mb-4">{t.successTitle}</h3>
+        <p className="text-stone-600 font-sans">{t.successMsg}</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <section className="py-24 px-6 bg-stone-50" id="rsvp">
+      <div className="max-w-lg mx-auto">
+        <div className="text-center mb-12">
+          <span className="uppercase tracking-[0.2em] text-xs font-sans text-stone-500 mb-2 block">{t.rsvpSubtitle}</span>
+          <h2 className="text-5xl font-serif italic text-stone-800">{t.rsvpTitle}</h2>
+          <p className="mt-4 text-stone-600 font-sans text-sm">{t.rsvpDeadline}</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="grid grid-cols-1 gap-6">
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.nameLabel}</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300"
+                placeholder="Mario Rossi"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.emailLabel}</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300"
+                placeholder="mario@email.com"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="attending" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.attendingLabel}</label>
+                <select
+                  id="attending"
+                  name="attending"
+                  value={formData.attending}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 cursor-pointer"
+                >
+                  <option value="yes">{t.accept}</option>
+                  <option value="no">{t.decline}</option>
+                </select>
+              </div>
+
+               <div className={`space-y-2 transition-opacity duration-300 ${isDeclined ? 'opacity-50' : 'opacity-100'}`}>
+                <label htmlFor="guests" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.guestsLabel}</label>
+                <select
+                  id="guests"
+                  name="guests"
+                  disabled={isDeclined}
+                  value={formData.guests}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 disabled:cursor-not-allowed"
+                >
+                  {isDeclined ? <option value="0">0</option> : null}
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className={`grid grid-cols-2 gap-6 transition-opacity duration-300 ${isDeclined ? 'opacity-50' : 'opacity-100'}`}>
+               <div className="space-y-2">
+                <label htmlFor="adults" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.adultsLabel}</label>
+                <select
+                  id="adults"
+                  name="adults"
+                  disabled={isDeclined}
+                  value={formData.adults}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 disabled:cursor-not-allowed"
+                >
+                  {isDeclined ? <option value="0">0</option> : null}
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="children" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.childrenLabel}</label>
+                <select
+                  id="children"
+                  name="children"
+                  disabled={isDeclined}
+                  value={formData.children}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 disabled:cursor-not-allowed"
+                >
+                  {isDeclined ? <option value="0">0</option> : null}
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className={`space-y-3 transition-opacity duration-300 ${isDeclined ? 'opacity-50' : 'opacity-100'}`}>
+              <div className="flex flex-col space-y-1">
+                <label htmlFor="dietaryRestrictions" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.dietaryLabel}</label>
+                {!isDeclined && (
+                  <p className="text-[10px] text-stone-400 font-sans italic flex items-start gap-1 leading-tight">
+                    <Info className="w-3 h-3 flex-shrink-0 text-olive-500" />
+                    {t.dietaryNote}
+                  </p>
+                )}
+              </div>
+              <input
+                type="text"
+                id="dietaryRestrictions"
+                name="dietaryRestrictions"
+                disabled={isDeclined}
+                value={formData.dietaryRestrictions}
+                onChange={handleChange}
+                className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300 disabled:cursor-not-allowed"
+                placeholder={t.placeholderOptional}
+              />
+            </div>
+          </div>
+
+          <div className="pt-8 text-center">
+             <button 
+              type="submit" 
+              disabled={status === 'submitting'}
+              className="bg-stone-800 text-stone-50 px-10 py-3 font-sans uppercase tracking-[0.2em] text-xs hover:bg-stone-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed min-w-[160px]"
+            >
+              {status === 'submitting' ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" /> {t.sendingBtn}
+                </span>
+              ) : t.confirmBtn}
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+};
+
+export default RsvpForm;
