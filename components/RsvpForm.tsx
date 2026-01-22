@@ -11,7 +11,7 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  // URL Webhook aggiornato
+  // URL Webhook aggiornato dall'utente
   const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/gr18nvipzgbwdng0phjwj9sgruiadsvp";
 
   const [formData, setFormData] = useState<RsvpData>({
@@ -59,11 +59,14 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setErrorMessage(null);
     
     try {
-      const normalizedEmail = formData.email.toLowerCase().trim();
+      // Normalizziamo l'email: tutto minuscolo e togliamo spazi extra
+      // Questo è vitale perché se uno scrive "Marco@Gmail.com" e un altro "marco@gmail.com",
+      // la ricerca su Google Sheets fallirebbe senza questa pulizia.
+      const cleanEmail = formData.email.toLowerCase().trim();
       
       const payload = {
         name: formData.name.trim(),
-        email: normalizedEmail,
+        email: cleanEmail,
         guests: Number(formData.guests),
         adults: Number(formData.adults),
         children: Number(formData.children),
@@ -71,8 +74,8 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
         submittedAt: new Date().toLocaleString('it-IT'),
         language: lang.toUpperCase(),
-        // Usiamo questo campo in 'Search Rows' su Make
-        rowSearchKey: normalizedEmail 
+        // Questa è la chiave che devi usare nel modulo "Search Rows" di Make
+        rowSearchKey: cleanEmail 
       };
 
       const response = await fetch(MAKE_WEBHOOK_URL, {
@@ -87,13 +90,13 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         setStatus('success');
       } else {
         const text = await response.text();
-        throw new Error(text || `Errore ${response.status}`);
+        throw new Error(text || `Errore server: ${response.status}`);
       }
       
     } catch (error: any) {
       console.error('RSVP Error:', error);
       setStatus('error');
-      setErrorMessage(error.message || "Errore durante l'invio.");
+      setErrorMessage(error.message || "Errore durante l'invio della risposta.");
     }
   };
 
