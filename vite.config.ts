@@ -10,11 +10,11 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
     },
     plugins: [react()],
-    base: '/',  // ← CAMBIA da './' per Vercel
+    base: '/',
     build: {
       target: 'esnext',
-      outDir: 'dist',  // ← AGGIUNGI
-      emptyOutDir: true  // ← AGGIUNGI
+      outDir: 'dist',
+      emptyOutDir: true
     },
     define: {
       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
