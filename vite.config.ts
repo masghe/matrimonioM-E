@@ -10,9 +10,11 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
     },
     plugins: [react()],
-    base: './',  // Fix Netlify asset paths
+    base: '/',  // ← CAMBIA da './' per Vercel
     build: {
-      target: 'esnext'
+      target: 'esnext',
+      outDir: 'dist',  // ← AGGIUNGI
+      emptyOutDir: true  // ← AGGIUNGI
     },
     define: {
       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
