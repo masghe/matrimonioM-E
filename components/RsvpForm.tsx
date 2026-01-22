@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { RsvpData, Language, translations } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Loader2, Info, AlertCircle } from 'lucide-react';
+import { Check, Loader2, Info, AlertCircle, Heart } from 'lucide-react';
 
 interface RsvpFormProps {
   lang: Language;
@@ -10,7 +11,6 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  // URL reale di Make.com fornito dall'utente
   const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/of53d524rctexw5ibrjeb436wbe4obeh";
 
   const [formData, setFormData] = useState<RsvpData>({
@@ -54,7 +54,6 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setStatus('submitting');
     
     try {
-      // Invio reale dei dati a Make.com
       const response = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: {
@@ -62,9 +61,10 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         },
         body: JSON.stringify({
           ...formData,
+          // L'email viene inviata pulita per far funzionare la Query/Filtro di Make
+          email: formData.email.toLowerCase().trim(), 
           submittedAt: new Date().toLocaleString(lang === 'it' ? 'it-IT' : 'ro-RO'),
-          languageUsed: lang === 'it' ? 'Italiano' : 'Rumeno',
-          status_presenza: formData.attending === 'yes' ? 'CONFERMATO' : 'DECLINATO'
+          languageUsed: lang === 'it' ? 'Italiano' : 'Rumeno'
         }),
       });
 
@@ -76,7 +76,6 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     } catch (error) {
       console.error('Errore RSVP:', error);
       setStatus('error');
-      // Ripristina lo stato idle dopo 3 secondi per permettere di riprovare
       setTimeout(() => setStatus('idle'), 3000);
     }
   };
@@ -85,17 +84,36 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
 
   if (status === 'success') {
     return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-md mx-auto py-20 text-center px-6"
-      >
-        <div className="w-16 h-16 bg-olive-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-olive-600">
-          <Check className="w-8 h-8" />
-        </div>
-        <h3 className="text-3xl font-serif italic text-stone-800 mb-4">{t.successTitle}</h3>
-        <p className="text-stone-600 font-sans">{t.successMsg}</p>
-      </motion.div>
+      <section className="py-24 px-6 bg-stone-50 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="max-w-md mx-auto text-center"
+        >
+          <div className="relative inline-block mb-8">
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+              className="w-20 h-20 bg-olive-500 rounded-full flex items-center justify-center text-white shadow-lg relative z-10"
+            >
+              <Check className="w-10 h-10" />
+            </motion.div>
+            <motion.div 
+              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 bg-olive-200 rounded-full -z-0"
+            />
+          </div>
+          <h3 className="text-4xl font-serif italic text-stone-800 mb-6">{t.successTitle}</h3>
+          <p className="text-stone-600 font-sans leading-relaxed mb-8">{t.successMsg}</p>
+          <div className="flex justify-center gap-2">
+            {[1, 2, 3].map(i => (
+              <Heart key={i} className="w-4 h-4 text-olive-300 fill-olive-300" />
+            ))}
+          </div>
+        </motion.div>
+      </section>
     );
   }
 
