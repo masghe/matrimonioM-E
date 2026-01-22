@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Hero from './components/Hero';
 import InfoSection from './components/InfoSection';
 import RsvpForm from './components/RsvpForm';
+import Assistant from './components/Assistant';
 import { Language, translations } from './types';
 
 const App: React.FC = () => {
@@ -43,6 +44,9 @@ const App: React.FC = () => {
       </div>
 
       <RsvpForm lang={lang} />
+      
+      {/* AI Assistant Component */}
+      <Assistant lang={lang} />
       
       <footer className="py-12 text-center text-stone-400 font-sans text-xs tracking-widest uppercase border-t border-stone-200">
         <p>&copy; 2026 Marco & Emilia. {t.footer}</p>

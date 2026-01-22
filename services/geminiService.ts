@@ -25,15 +25,10 @@ Note culturali:
 
 export const sendMessageToAssistant = async (message: string): Promise<string> => {
   try {
-    // Controllo di sicurezza per l'ambiente browser
-    const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
+    // Initializing GoogleGenAI using process.env.API_KEY directly as per SDK requirements
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    if (!apiKey) {
-      console.warn("API Key non trovata. L'assistente non sarà disponibile.");
-      return "Mi scuso, l'assistente non è configurato correttamente.";
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
+    // Using ai.models.generateContent with model name and prompt directly
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: message,
@@ -43,6 +38,7 @@ export const sendMessageToAssistant = async (message: string): Promise<string> =
       },
     });
     
+    // Correctly accessing the text property from GenerateContentResponse
     return response.text || "Mi scuso, non riesco a recuperare questa informazione.";
   } catch (error) {
     console.error("Error communicating with Gemini:", error);
