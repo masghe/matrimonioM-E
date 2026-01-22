@@ -1,0 +1,5 @@
+# Fix ESM MIME for AI Studio Vite
+/assets/*
+  Content-Type: application/javascript
+/*
+  Content-Type: text/html
