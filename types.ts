@@ -1,6 +1,7 @@
 
 export type Language = 'it' | 'ro';
 
+
 export interface RsvpData {
   name: string;
   email: string;
@@ -9,13 +10,6 @@ export interface RsvpData {
   children: number;
   attending: 'yes' | 'no';
   dietaryRestrictions: string;
-}
-
-// Added ChatMessage interface to fix import error in Assistant.tsx
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-  timestamp: Date;
 }
 
 export interface SectionProps {
@@ -59,10 +53,7 @@ export const translations = {
     welcomeTitle: "Benvenuti al nostro matrimonio!",
     welcomeText: "Siamo felicissimi! Non stiamo più nella pelle e vogliamo condividere con te questa notizia! Stiamo organizzando questo matrimonio e vogliamo che sia un giorno speciale per tutti. In attesa del grande giorno, abbiamo creato questo sito dove puoi trovare tutte le informazioni.",
     gettingMarried: "Ci sposiamo!",
-    // Assistant translations
-    assistantTitle: "Assistente di Matrimonio",
-    assistantWelcome: "Ciao! Sono l'assistente virtuale di Marco ed Emilia. Come posso aiutarti?",
-    assistantPlaceholder: "Scrivi una domanda...",
+
   },
   ro: {
     announce: "Suntem bucuroși să vă anunțăm",
@@ -87,7 +78,7 @@ export const translations = {
     childrenLabel: "Din care Copii",
     attendingLabel: "Prezență",
     dietaryLabel: "Alergii sau Intoleranțe",
-    dietaryNote: "Meniul va fi pe bază de pește. Vă rugăm să ne comunicați eventualele alergii sau necesitatea unui meniu alternativ.",
+    dietaryNote: "Meniul va fi pe bază de pește. Vă rugăm să ne comunicați eventualele alergii sau necesitatea unui menu alternativ.",
     placeholderOptional: "Exemplu: Fără pește, Celiachie, etc.",
     accept: "Accept cu bucurie",
     decline: "Refuz cu regret",
@@ -97,11 +88,8 @@ export const translations = {
     successMsg: "Am primit răspunsul tău. Abia așteptăm să sărbătorim împreună.",
     footer: "Cu dragoste.",
     welcomeTitle: "Bine ați venit la nunta noastră!",
-    welcomeText: "Suntem foarte fericiți! Abia așteptăm și vrem să împărtășim cu voi această veste! Organizăm această nuntă și ne dorim să fie o zi specială pentru toată lumea. În așteptarea marii zile, am creat acest site unde puteți găsi toate informațiile.",
+    welcomeText: "Suntem foarte fericiți! Abia așteptăm și vrem să împărtășim cu voi această veste! Organizăm această nuntă și ne dorim să fie o zi specială pentru toată lumea. In așteptarea marii zile, am creat acest site unde puteți găsi toate informațiile.",
     gettingMarried: "Ne căsătorim!",
-    // Assistant translations
-    assistantTitle: "Asistent Nuntă",
-    assistantWelcome: "Bună! Sunt asistentul virtual al lui Marco și Emilia. Cu ce te pot ajuta?",
-    assistantPlaceholder: "Scrie o întrebare...",
+
   }
 };
