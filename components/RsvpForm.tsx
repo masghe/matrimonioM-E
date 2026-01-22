@@ -54,10 +54,13 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setStatus('submitting');
     
     try {
-      // Pulizia profonda dei dati per Make
+      // Normalizzazione rigorosa dei dati per garantire il successo della ricerca in Make
+      const cleanEmail = formData.email.toLowerCase().replace(/\s/g, '');
+      const cleanName = formData.name.trim().replace(/\s+/g, ' ');
+
       const payload = {
-        name: formData.name.trim().replace(/\s+/g, ' '), // Rimuove spazi doppi
-        email: formData.email.toLowerCase().trim(),
+        name: cleanName,
+        email: cleanEmail,
         guests: Number(formData.guests),
         adults: Number(formData.adults),
         children: Number(formData.children),
@@ -78,12 +81,11 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       if (response.ok) {
         setStatus('success');
       } else {
-        throw new Error('Server unreachable');
+        throw new Error('Network response was not ok');
       }
     } catch (error) {
-      console.error('RSVP submission error:', error);
+      console.error('RSVP Error:', error);
       setStatus('error');
-      // Permette di riprovare dopo 5 secondi
       setTimeout(() => setStatus('idle'), 5000);
     }
   };
@@ -286,7 +288,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Errore. Controlla la connessione e riprova.
+                  <AlertCircle className="w-4 h-4" /> Errore nell'invio. Riprova tra poco.
                 </motion.p>
               )}
             </AnimatePresence>
