@@ -11,6 +11,7 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
+  // NOTA: Se l'errore 410 persiste, verifica che questo URL sia identico a quello nel modulo Webhook di Make.
   const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/of53d524rctexw5ibrjeb436wbe4obeh";
 
   const [formData, setFormData] = useState<RsvpData>({
@@ -71,26 +72,25 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         language: lang.toUpperCase()
       };
 
-      // TRUCCO CORS: Usiamo text/plain per evitare che il browser faccia la richiesta OPTIONS (pre-flight)
-      // che Make.com blocca per motivi di sicurezza CORS.
-      // Il webhook di Make riceverà comunque il JSON correttamente.
-      await fetch(MAKE_WEBHOOK_URL, {
+      const response = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'text/plain' 
+          'Content-Type': 'application/json' 
         },
-        body: JSON.stringify(payload),
-        mode: 'no-cors' // Permette l'invio anche se il server non risponde con gli header CORS corretti
+        body: JSON.stringify(payload)
       });
 
-      // In modalità 'no-cors' non possiamo leggere response.ok, 
-      // quindi assumiamo che se siamo arrivati qui senza eccezioni, l'invio è andato.
-      setStatus('success');
+      if (response.ok) {
+        setStatus('success');
+      } else {
+        console.error('Server error:', response.status);
+        throw new Error(`Errore server: ${response.status}`);
+      }
       
     } catch (error) {
       console.error('RSVP Error:', error);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 5000);
+      // Non resettiamo subito lo stato per permettere all'utente di leggere l'errore
     }
   };
 
@@ -294,7 +294,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Qualcosa è andato storto. Riprova.
+                  <AlertCircle className="w-4 h-4" /> Webhook non valido (410 Gone). Controlla l'URL su Make.
                 </motion.p>
               )}
             </AnimatePresence>
