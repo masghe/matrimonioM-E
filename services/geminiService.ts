@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 
 const WEDDING_DETAILS = `
@@ -15,20 +14,19 @@ Informazioni ufficiali:
 - **Bambini:** Benvenuti! Animazione presente.
 - **Lista Nozze:** Fondo per il viaggio di nozze (IBAN su richiesta).
 - **Trasporto:** Navetta ore 15:00 dal centro di Civitavecchia per la cattedrale, e poi verso la villa.
-
-Note culturali: 
-- Emilia è rumena, quindi accogli con calore anche gli ospiti che scrivono in rumeno.
-- Se ti chiedono traduzioni semplici tra le due lingue riguardo al matrimonio, aiuta pure.
-- Sii conciso, raffinato e accogliente.
-- Se chiedono della location del ricevimento, menziona Villa dei Desideri a Cerveteri e specifica che è un luogo magico.
 `;
 
 export const sendMessageToAssistant = async (message: string): Promise<string> => {
   try {
-    // Initializing GoogleGenAI using process.env.API_KEY directly as per SDK requirements
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
     
-    // Using ai.models.generateContent with model name and prompt directly
+    if (!apiKey) {
+      console.warn("API Key non configurata.");
+      return "L'assistente non è disponibile al momento.";
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+    
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: message,
@@ -38,10 +36,9 @@ export const sendMessageToAssistant = async (message: string): Promise<string> =
       },
     });
     
-    // Correctly accessing the text property from GenerateContentResponse
-    return response.text || "Mi scuso, non riesco a recuperare questa informazione.";
+    return response.text || "Mi scuso, non riesco a rispondere.";
   } catch (error) {
-    console.error("Error communicating with Gemini:", error);
-    return "Si è verificato un errore. Riprova più tardi.";
+    console.error("Gemini Error:", error);
+    return "Si è verificato un errore di connessione.";
   }
 };

@@ -1,5 +1,10 @@
-
 export type Language = 'it' | 'ro';
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+  timestamp: Date;
+}
 
 export interface RsvpData {
   name: string;
@@ -10,8 +15,6 @@ export interface RsvpData {
   attending: 'yes' | 'no';
   dietaryRestrictions: string;
 }
-
-
 
 export interface SectionProps {
   id: string;
@@ -54,7 +57,9 @@ export const translations = {
     welcomeTitle: "Benvenuti al nostro matrimonio!",
     welcomeText: "Siamo felicissimi! Non stiamo più nella pelle e vogliamo condividere con te questa notizia! Stiamo organizzando questo matrimonio e vogliamo che sia un giorno speciale per tutti. In attesa del grande giorno, abbiamo creato questo sito dove puoi trovare tutte le informazioni.",
     gettingMarried: "Ci sposiamo!",
-
+    assistantWelcome: "Ciao! Sono l'assistente di Marco ed Emilia. Come posso aiutarti?",
+    assistantTitle: "Wedding Assistant",
+    assistantPlaceholder: "Scrivi un messaggio..."
   },
   ro: {
     announce: "Suntem bucuroși să vă anunțăm",
@@ -91,6 +96,8 @@ export const translations = {
     welcomeTitle: "Bine ați venit la nunta noastră!",
     welcomeText: "Suntem foarte fericiți! Abia așteptăm și vrem să împărtășim cu voi această veste! Organizăm această nuntă și ne dorim să fie o zi specială pentru toată lumea. In așteptarea marii zile, am creat acest site unde puteți găsi toate informațiile.",
     gettingMarried: "Ne căsătorim!",
-
+    assistantWelcome: "Bună! Sunt asistentul lui Marco și al Emiliei. Cum te pot ajuta?",
+    assistantTitle: "Asistent Nuntă",
+    assistantPlaceholder: "Scrie un mesaj..."
   }
 };
