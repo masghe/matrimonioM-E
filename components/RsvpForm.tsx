@@ -51,14 +51,14 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === 'submitting') return; // Previene invii doppi
+    if (status === 'submitting') return;
     
     setStatus('submitting');
     
     try {
-      // Pulizia estrema per evitare mismatch su Make
-      const cleanEmail = formData.email.toLowerCase().trim().replace(/\s/g, '');
-      const cleanName = formData.name.trim().replace(/\s+/g, ' ');
+      // Pulizia profonda per evitare errori di ricerca nel database
+      const cleanEmail = formData.email.toLowerCase().trim();
+      const cleanName = formData.name.trim();
 
       const payload = {
         name: cleanName,
@@ -68,7 +68,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         children: Number(formData.children),
         attending: formData.attending === 'yes' ? 'Sì' : 'No',
         dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
-        submittedAt: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
+        submittedAt: new Date().toISOString(),
         language: lang.toUpperCase()
       };
 
@@ -81,13 +81,12 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       if (response.ok) {
         setStatus('success');
       } else {
-        throw new Error('Webhook failed');
+        throw new Error('Server response error');
       }
     } catch (error) {
       console.error('RSVP Error:', error);
       setStatus('error');
-      // Reset dopo 4 secondi per permettere un nuovo tentativo in caso di errore
-      setTimeout(() => setStatus('idle'), 4000);
+      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 
@@ -291,7 +290,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Errore. Controlla la connessione e riprova.
+                  <AlertCircle className="w-4 h-4" /> Qualcosa è andato storto. Riprova.
                 </motion.p>
               )}
             </AnimatePresence>
