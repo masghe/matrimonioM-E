@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { RsvpData, Language, translations } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Loader2, Info } from 'lucide-react';
+import { Check, Loader2, Info, AlertCircle } from 'lucide-react';
 
 interface RsvpFormProps {
   lang: Language;
@@ -10,6 +9,10 @@ interface RsvpFormProps {
 
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
+  
+  // URL reale di Make.com fornito dall'utente
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/of53d524rctexw5ibrjeb436wbe4obeh";
+
   const [formData, setFormData] = useState<RsvpData>({
     name: '',
     email: '',
@@ -19,7 +22,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     attending: 'yes',
     dietaryRestrictions: '',
   });
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -29,7 +32,6 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       setFormData(prev => ({
         ...prev,
         attending: value as 'yes' | 'no',
-        // Se non partecipa, azzera tutto. Se torna a partecipare, imposta dei default sensati.
         guests: isAttending ? 1 : 0,
         adults: isAttending ? 1 : 0,
         children: 0,
@@ -47,14 +49,36 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
     
-    setTimeout(() => {
-      setStatus('success');
-      console.log('RSVP Data:', formData);
-    }, 1500);
+    try {
+      // Invio reale dei dati a Make.com
+      const response = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          submittedAt: new Date().toLocaleString(lang === 'it' ? 'it-IT' : 'ro-RO'),
+          languageUsed: lang === 'it' ? 'Italiano' : 'Rumeno',
+          status_presenza: formData.attending === 'yes' ? 'CONFERMATO' : 'DECLINATO'
+        }),
+      });
+
+      if (response.ok) {
+        setStatus('success');
+      } else {
+        throw new Error('Errore durante l\'invio');
+      }
+    } catch (error) {
+      console.error('Errore RSVP:', error);
+      setStatus('error');
+      // Ripristina lo stato idle dopo 3 secondi per permettere di riprovare
+      setTimeout(() => setStatus('idle'), 3000);
+    }
   };
 
   const isDeclined = formData.attending === 'no';
@@ -215,7 +239,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
             </div>
           </div>
 
-          <div className="pt-8 text-center">
+          <div className="pt-8 text-center flex flex-col items-center gap-4">
              <button 
               type="submit" 
               disabled={status === 'submitting'}
@@ -227,6 +251,19 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                 </span>
               ) : t.confirmBtn}
             </button>
+
+            <AnimatePresence>
+              {status === 'error' && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-red-500 text-xs font-sans flex items-center gap-2"
+                >
+                  <AlertCircle className="w-4 h-4" /> Si è verificato un errore. Riprova.
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
         </form>
       </div>
