@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { RsvpData, Language, translations } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Loader2, Info, AlertCircle, Heart } from 'lucide-react';
+import { Check, Loader2, AlertCircle, Heart, Info } from 'lucide-react';
 
 interface RsvpFormProps {
   lang: Language;
@@ -54,29 +54,36 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setStatus('submitting');
     
     try {
+      // Pulizia dei dati: email sempre minuscola e senza spazi laterali
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.toLowerCase().trim(),
+        guests: Number(formData.guests),
+        adults: Number(formData.adults),
+        children: Number(formData.children),
+        attending: formData.attending,
+        dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
+        submittedAt: new Date().toISOString(), // Formato standard per database
+        languageUsed: lang.toUpperCase()
+      };
+
       const response = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          // L'email viene inviata pulita per far funzionare la Query/Filtro di Make
-          email: formData.email.toLowerCase().trim(), 
-          submittedAt: new Date().toLocaleString(lang === 'it' ? 'it-IT' : 'ro-RO'),
-          languageUsed: lang === 'it' ? 'Italiano' : 'Rumeno'
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         setStatus('success');
       } else {
-        throw new Error('Errore durante l\'invio');
+        throw new Error('Errore server');
       }
     } catch (error) {
-      console.error('Errore RSVP:', error);
+      console.error('RSVP Error:', error);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 3000);
+      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 
@@ -138,7 +145,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300"
-                placeholder="Mario Rossi"
+                placeholder="Nome e Cognome"
               />
             </div>
 
@@ -152,7 +159,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300"
-                placeholder="mario@email.com"
+                placeholder="latua@email.com"
               />
             </div>
             
@@ -278,7 +285,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Si è verificato un errore. Riprova.
+                  <AlertCircle className="w-4 h-4" /> Qualcosa è andato storto. Riprova.
                 </motion.p>
               )}
             </AnimatePresence>
