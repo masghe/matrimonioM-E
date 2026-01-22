@@ -11,7 +11,7 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  // Nuovo URL del Webhook aggiornato
+  // URL del Webhook aggiornato fornito dall'utente
   const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/gr18nvipzgbwdng0phjwj9sgruiadsvp";
 
   const [formData, setFormData] = useState<RsvpData>({
@@ -59,16 +59,22 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setErrorMessage(null);
     
     try {
+      // Pulizia dati per rendere la ricerca su Google Sheets (Make) infallibile
+      const cleanEmail = formData.email.toLowerCase().trim();
+      const cleanName = formData.name.trim();
+
       const payload = {
-        name: formData.name.trim(),
-        email: formData.email.toLowerCase().trim(),
+        name: cleanName,
+        email: cleanEmail,
         guests: Number(formData.guests),
         adults: Number(formData.adults),
         children: Number(formData.children),
         attending: formData.attending === 'yes' ? 'Sì' : 'No',
         dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
         submittedAt: new Date().toISOString(),
-        language: lang.toUpperCase()
+        language: lang.toUpperCase(),
+        // Aggiungiamo un campo 'key' esplicito che Make può usare per cercare la riga
+        searchKey: cleanEmail 
       };
 
       const response = await fetch(MAKE_WEBHOOK_URL, {
@@ -90,7 +96,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       setStatus('error');
       
       if (error.message.includes('fetch') || error.message.includes('Failed')) {
-        setErrorMessage("Errore di connessione. Verifica che il Webhook sia attivo su Make.com.");
+        setErrorMessage("Errore di connessione. Verifica che il Webhook sia attivo (ON) su Make.com.");
       } else {
         setErrorMessage(error.message);
       }
