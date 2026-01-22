@@ -44,7 +44,6 @@ const App: React.FC = () => {
 
       <RsvpForm lang={lang} />
       
-      
       <footer className="py-12 text-center text-stone-400 font-sans text-xs tracking-widest uppercase border-t border-stone-200">
         <p>&copy; 2026 Marco & Emilia. {t.footer}</p>
       </footer>

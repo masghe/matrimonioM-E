@@ -25,8 +25,15 @@ Note culturali:
 
 export const sendMessageToAssistant = async (message: string): Promise<string> => {
   try {
-    // Create a new instance right before making an API call to ensure latest configuration is used
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // Controllo di sicurezza per l'ambiente browser
+    const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
+    
+    if (!apiKey) {
+      console.warn("API Key non trovata. L'assistente non sarà disponibile.");
+      return "Mi scuso, l'assistente non è configurato correttamente.";
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: message,
@@ -35,7 +42,7 @@ export const sendMessageToAssistant = async (message: string): Promise<string> =
         temperature: 0.7,
       },
     });
-    // Use .text property directly as it returns the string output from GenerateContentResponse
+    
     return response.text || "Mi scuso, non riesco a recuperare questa informazione.";
   } catch (error) {
     console.error("Error communicating with Gemini:", error);
