@@ -11,8 +11,8 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  // NOTA: Se l'errore 410 persiste, verifica che questo URL sia identico a quello nel modulo Webhook di Make.
-  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/of53d524rctexw5ibrjeb436wbe4obeh";
+  // Nuovo URL del Webhook aggiornato
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/gr18nvipzgbwdng0phjwj9sgruiadsvp";
 
   const [formData, setFormData] = useState<RsvpData>({
     name: '',
@@ -24,6 +24,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     dietaryRestrictions: '',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -55,14 +56,12 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     if (status === 'submitting') return;
     
     setStatus('submitting');
+    setErrorMessage(null);
     
     try {
-      const cleanEmail = formData.email.toLowerCase().trim();
-      const cleanName = formData.name.trim();
-
       const payload = {
-        name: cleanName,
-        email: cleanEmail,
+        name: formData.name.trim(),
+        email: formData.email.toLowerCase().trim(),
         guests: Number(formData.guests),
         adults: Number(formData.adults),
         children: Number(formData.children),
@@ -83,14 +82,18 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       if (response.ok) {
         setStatus('success');
       } else {
-        console.error('Server error:', response.status);
-        throw new Error(`Errore server: ${response.status}`);
+        throw new Error(`Errore del server: ${response.status}`);
       }
       
-    } catch (error) {
-      console.error('RSVP Error:', error);
+    } catch (error: any) {
+      console.error('RSVP Submission Error:', error);
       setStatus('error');
-      // Non resettiamo subito lo stato per permettere all'utente di leggere l'errore
+      
+      if (error.message.includes('fetch') || error.message.includes('Failed')) {
+        setErrorMessage("Errore di connessione. Verifica che il Webhook sia attivo su Make.com.");
+      } else {
+        setErrorMessage(error.message);
+      }
     }
   };
 
@@ -288,14 +291,20 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
 
             <AnimatePresence>
               {status === 'error' && (
-                <motion.p 
+                <motion.div 
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="text-red-500 text-xs font-sans flex items-center gap-2"
+                  className="bg-red-50 border border-red-100 p-4 rounded-md max-w-sm"
                 >
-                  <AlertCircle className="w-4 h-4" /> Webhook non valido (410 Gone). Controlla l'URL su Make.
-                </motion.p>
+                  <p className="text-red-700 text-xs font-sans flex items-start gap-2 text-left leading-normal">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" /> 
+                    <span>
+                      {errorMessage || "Errore durante l'invio."} <br/>
+                      <strong className="block mt-1">Verifica che lo scenario su Make sia attivo (ON).</strong>
+                    </span>
+                  </p>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
