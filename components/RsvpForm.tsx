@@ -56,7 +56,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setStatus('submitting');
     
     try {
-      // Pulizia profonda per evitare errori di ricerca nel database
+      // Pulizia estrema dell'input per facilitare la ricerca in Make/Google Sheets
       const cleanEmail = formData.email.toLowerCase().trim();
       const cleanName = formData.name.trim();
 
@@ -81,11 +81,12 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       if (response.ok) {
         setStatus('success');
       } else {
-        throw new Error('Server response error');
+        throw new Error('Errore di comunicazione con il server');
       }
     } catch (error) {
       console.error('RSVP Error:', error);
       setStatus('error');
+      // Reset dello stato di errore dopo 5 secondi per permettere un nuovo tentativo
       setTimeout(() => setStatus('idle'), 5000);
     }
   };
@@ -290,7 +291,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Qualcosa è andato storto. Riprova.
+                  <AlertCircle className="w-4 h-4" /> Ops! Qualcosa è andato storto nel salvataggio. Riprova.
                 </motion.p>
               )}
             </AnimatePresence>
