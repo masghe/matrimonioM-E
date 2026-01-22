@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import Hero from './components/Hero';
 import InfoSection from './components/InfoSection';
 import RsvpForm from './components/RsvpForm';
+import Assistant from './components/Assistant';
 import { Language, translations } from './types';
 
 const App: React.FC = () => {
@@ -46,6 +48,9 @@ const App: React.FC = () => {
       <footer className="py-12 text-center text-stone-400 font-sans text-xs tracking-widest uppercase border-t border-stone-200">
         <p>&copy; 2026 Marco & Emilia. {t.footer}</p>
       </footer>
+
+      {/* AI Assistant Component added to the main view */}
+      <Assistant lang={lang} />
     </main>
   );
 };

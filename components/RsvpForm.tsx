@@ -30,9 +30,9 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         ...prev,
         attending: value as 'yes' | 'no',
         // Se non partecipa, azzera tutto. Se torna a partecipare, imposta dei default sensati.
-        guests: isAttending ? (prev.guests === 0 ? 1 : prev.guests) : 0,
-        adults: isAttending ? (prev.adults === 0 ? 1 : prev.adults) : 0,
-        children: isAttending ? prev.children : 0,
+        guests: isAttending ? 1 : 0,
+        adults: isAttending ? 1 : 0,
+        children: 0,
       }));
       return;
     }
@@ -129,7 +129,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                 </select>
               </div>
 
-               <div className={`space-y-2 transition-opacity duration-300 ${isDeclined ? 'opacity-50' : 'opacity-100'}`}>
+               <div className={`space-y-2 transition-all duration-300 ${isDeclined ? 'opacity-30' : 'opacity-100'}`}>
                 <label htmlFor="guests" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.guestsLabel}</label>
                 <select
                   id="guests"
@@ -139,15 +139,18 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   onChange={handleChange}
                   className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 disabled:cursor-not-allowed"
                 >
-                  {isDeclined ? <option value="0">0</option> : null}
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
+                  {isDeclined ? (
+                    <option value="0">0</option>
+                  ) : (
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                      <option key={n} value={n}>{n}</option>
+                    ))
+                  )}
                 </select>
               </div>
             </div>
 
-            <div className={`grid grid-cols-2 gap-6 transition-opacity duration-300 ${isDeclined ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`grid grid-cols-2 gap-6 transition-all duration-300 ${isDeclined ? 'opacity-30' : 'opacity-100'}`}>
                <div className="space-y-2">
                 <label htmlFor="adults" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.adultsLabel}</label>
                 <select
@@ -158,10 +161,13 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   onChange={handleChange}
                   className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 disabled:cursor-not-allowed"
                 >
-                  {isDeclined ? <option value="0">0</option> : null}
-                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
+                  {isDeclined ? (
+                    <option value="0">0</option>
+                  ) : (
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                      <option key={n} value={n}>{n}</option>
+                    ))
+                  )}
                 </select>
               </div>
 
@@ -175,15 +181,18 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   onChange={handleChange}
                   className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 disabled:cursor-not-allowed"
                 >
-                  {isDeclined ? <option value="0">0</option> : null}
-                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
+                  {isDeclined ? (
+                    <option value="0">0</option>
+                  ) : (
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                      <option key={n} value={n}>{n}</option>
+                    ))
+                  )}
                 </select>
               </div>
             </div>
 
-            <div className={`space-y-3 transition-opacity duration-300 ${isDeclined ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`space-y-3 transition-all duration-300 ${isDeclined ? 'opacity-30' : 'opacity-100'}`}>
               <div className="flex flex-col space-y-1">
                 <label htmlFor="dietaryRestrictions" className="text-xs uppercase tracking-wider text-stone-500 font-sans">{t.dietaryLabel}</label>
                 {!isDeclined && (
