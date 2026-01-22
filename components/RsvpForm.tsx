@@ -11,7 +11,7 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  // URL del NUOVO Webhook fornito (gr18nvipzgbwdng0phjwj9sgruiadsvp)
+  // URL Webhook aggiornato
   const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/gr18nvipzgbwdng0phjwj9sgruiadsvp";
 
   const [formData, setFormData] = useState<RsvpData>({
@@ -59,7 +59,6 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setErrorMessage(null);
     
     try {
-      // Normalizziamo l'email per rendere la ricerca su Google Sheets tramite Make infallibile
       const normalizedEmail = formData.email.toLowerCase().trim();
       
       const payload = {
@@ -72,7 +71,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
         submittedAt: new Date().toLocaleString('it-IT'),
         language: lang.toUpperCase(),
-        // Inviamo un campo specifico per la ricerca riga
+        // Usiamo questo campo in 'Search Rows' su Make
         rowSearchKey: normalizedEmail 
       };
 
@@ -87,22 +86,14 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       if (response.ok) {
         setStatus('success');
       } else {
-        // Gestione errori specifici del server
-        const errorText = await response.text();
-        throw new Error(errorText || `Errore ${response.status}`);
+        const text = await response.text();
+        throw new Error(text || `Errore ${response.status}`);
       }
       
     } catch (error: any) {
-      console.error('RSVP Submission Error:', error);
+      console.error('RSVP Error:', error);
       setStatus('error');
-      
-      if (error.message.includes('fetch') || error.message.includes('Failed')) {
-        setErrorMessage("Errore di connessione. Assicurati che lo scenario su Make.com sia su 'ON'.");
-      } else if (error.message.includes('410')) {
-        setErrorMessage("L'URL di Make non è più valido (410). Generane uno nuovo.");
-      } else {
-        setErrorMessage(`Dettaglio errore: ${error.message}`);
-      }
+      setErrorMessage(error.message || "Errore durante l'invio.");
     }
   };
 
@@ -306,14 +297,10 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="bg-red-50 border border-red-100 p-4 rounded-md max-w-sm"
                 >
-                  <div className="text-red-700 text-[11px] font-sans flex items-start gap-2 text-left leading-tight p-1">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-500" /> 
-                    <div>
-                      <p className="font-bold mb-1">Errore tecnico Webhook:</p>
-                      <p className="opacity-80">{errorMessage}</p>
-                      <p className="mt-2 text-stone-500">Controlla che lo scenario sia attivo e che l'URL sia corretto.</p>
-                    </div>
-                  </div>
+                  <p className="text-red-700 text-[11px] font-sans flex items-start gap-2 text-left leading-tight">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" /> 
+                    <span>{errorMessage}</span>
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
