@@ -54,17 +54,17 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setStatus('submitting');
     
     try {
-      // Pulizia dei dati: email sempre minuscola e senza spazi laterali
+      // Pulizia profonda dei dati per Make
       const payload = {
-        name: formData.name.trim(),
+        name: formData.name.trim().replace(/\s+/g, ' '), // Rimuove spazi doppi
         email: formData.email.toLowerCase().trim(),
         guests: Number(formData.guests),
         adults: Number(formData.adults),
         children: Number(formData.children),
-        attending: formData.attending,
+        attending: formData.attending === 'yes' ? 'Sì' : 'No',
         dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
-        submittedAt: new Date().toISOString(), // Formato standard per database
-        languageUsed: lang.toUpperCase()
+        submittedAt: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' }),
+        language: lang.toUpperCase()
       };
 
       const response = await fetch(MAKE_WEBHOOK_URL, {
@@ -78,11 +78,12 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
       if (response.ok) {
         setStatus('success');
       } else {
-        throw new Error('Errore server');
+        throw new Error('Server unreachable');
       }
     } catch (error) {
-      console.error('RSVP Error:', error);
+      console.error('RSVP submission error:', error);
       setStatus('error');
+      // Permette di riprovare dopo 5 secondi
       setTimeout(() => setStatus('idle'), 5000);
     }
   };
@@ -285,7 +286,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Qualcosa è andato storto. Riprova.
+                  <AlertCircle className="w-4 h-4" /> Errore. Controlla la connessione e riprova.
                 </motion.p>
               )}
             </AnimatePresence>
