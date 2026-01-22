@@ -51,11 +51,13 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === 'submitting') return; // Previene invii doppi
+    
     setStatus('submitting');
     
     try {
-      // Normalizzazione rigorosa dei dati per garantire il successo della ricerca in Make
-      const cleanEmail = formData.email.toLowerCase().replace(/\s/g, '');
+      // Pulizia estrema per evitare mismatch su Make
+      const cleanEmail = formData.email.toLowerCase().trim().replace(/\s/g, '');
       const cleanName = formData.name.trim().replace(/\s+/g, ' ');
 
       const payload = {
@@ -72,21 +74,20 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
 
       const response = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         setStatus('success');
       } else {
-        throw new Error('Network response was not ok');
+        throw new Error('Webhook failed');
       }
     } catch (error) {
       console.error('RSVP Error:', error);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 5000);
+      // Reset dopo 4 secondi per permettere un nuovo tentativo in caso di errore
+      setTimeout(() => setStatus('idle'), 4000);
     }
   };
 
@@ -145,6 +146,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                 id="name"
                 name="name"
                 required
+                autoComplete="name"
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300"
@@ -159,6 +161,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                 id="email"
                 name="email"
                 required
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full bg-transparent border-b border-stone-300 py-2 focus:outline-none focus:border-olive-500 transition-colors font-serif text-xl text-stone-800 placeholder-stone-300"
@@ -288,7 +291,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
                   exit={{ opacity: 0 }}
                   className="text-red-500 text-xs font-sans flex items-center gap-2"
                 >
-                  <AlertCircle className="w-4 h-4" /> Errore nell'invio. Riprova tra poco.
+                  <AlertCircle className="w-4 h-4" /> Errore. Controlla la connessione e riprova.
                 </motion.p>
               )}
             </AnimatePresence>
