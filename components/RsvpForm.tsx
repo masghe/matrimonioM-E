@@ -11,8 +11,7 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  // URL Webhook aggiornato dall'utente
-  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/gr18nvipzgbwdng0phjwj9sgruiadsvp";
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/sq0r44pxjpon22qg2h3imr65ak2yymmr";
 
   const [formData, setFormData] = useState<RsvpData>({
     name: '',
@@ -59,9 +58,6 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
     setErrorMessage(null);
     
     try {
-      // Normalizziamo l'email: tutto minuscolo e togliamo spazi extra
-      // Questo è vitale perché se uno scrive "Marco@Gmail.com" e un altro "marco@gmail.com",
-      // la ricerca su Google Sheets fallirebbe senza questa pulizia.
       const cleanEmail = formData.email.toLowerCase().trim();
       
       const payload = {
@@ -74,7 +70,6 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         dietaryRestrictions: formData.dietaryRestrictions.trim() || "Nessuna",
         submittedAt: new Date().toLocaleString('it-IT'),
         language: lang.toUpperCase(),
-        // Questa è la chiave che devi usare nel modulo "Search Rows" di Make
         rowSearchKey: cleanEmail 
       };
 
@@ -90,13 +85,13 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
         setStatus('success');
       } else {
         const text = await response.text();
-        throw new Error(text || `Errore server: ${response.status}`);
+        throw new Error(text || `Errore: ${response.status}`);
       }
       
     } catch (error: any) {
       console.error('RSVP Error:', error);
       setStatus('error');
-      setErrorMessage(error.message || "Errore durante l'invio della risposta.");
+      setErrorMessage(error.message || "Errore durante l'invio.");
     }
   };
 
