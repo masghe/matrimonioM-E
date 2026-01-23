@@ -11,7 +11,7 @@ interface RsvpFormProps {
 const RsvpForm: React.FC<RsvpFormProps> = ({ lang }) => {
   const t = translations[lang];
   
-  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/sq0r44pxjpon22qg2h3imr65ak2yymmr";
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/oq3l6j636nd9mdfjqfn74y9d57vn7qsr";
 
   const [formData, setFormData] = useState<RsvpData>({
     name: '',
