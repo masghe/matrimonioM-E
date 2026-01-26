@@ -93,7 +93,7 @@ const App: React.FC = () => {
               <div className="flex flex-col h-full pt-10">
                 {/* Title */}
                 <div className="mb-16">
-                  <h2 className="text-4xl md:text-5xl font-serif italic text-stone-800">Marco e Emilia</h2>
+                  <h2 className="text-4xl md:text-5xl font-serif italic text-stone-800">Marco & Emilia</h2>
                 </div>
 
                 {/* Navigation Links */}
