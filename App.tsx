@@ -6,7 +6,7 @@ import RsvpForm from './components/RsvpForm';
 import GiftList from './components/GiftList';
 import { Language, translations } from './types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Heart } from 'lucide-react';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('it');
@@ -32,7 +32,7 @@ const App: React.FC = () => {
       
       {/* Navigation Bars */}
       <div className="fixed top-6 left-6 right-6 z-50 flex justify-between items-center pointer-events-none">
-        {/* Hamburger Menu Button - Style from first photo */}
+        {/* Hamburger Menu Button */}
         <button 
           onClick={() => setIsMenuOpen(true)}
           className="pointer-events-auto bg-white w-12 h-12 flex flex-col items-center justify-center gap-1.5 rounded-[1.2rem] shadow-lg hover:shadow-xl transition-all duration-300 group"
@@ -118,7 +118,7 @@ const App: React.FC = () => {
                   </button>
                 </nav>
 
-                {/* Bottom RSVP Button - Style from second photo */}
+                {/* Bottom RSVP Button */}
                 <div className="mt-auto pb-6">
                   <button 
                     onClick={() => scrollToSection('rsvp')}
@@ -149,8 +149,11 @@ const App: React.FC = () => {
         <GiftList lang={lang} />
       </div>
 
-      <footer className="py-24 text-center text-stone-400 font-sans text-xs tracking-widest uppercase border-t border-stone-200 bg-white">
-        <p>&copy; 2026 Marco & Emilia. {t.footer}</p>
+      <footer className="py-20 text-center text-stone-400 font-sans text-[10px] tracking-[0.3em] uppercase bg-stone-50">
+        <div className="flex items-center justify-center gap-1.5 flex-wrap px-6">
+          <span>&copy; 2026 Marco & Emilia • {t.footer}</span>
+          <Heart className="w-3 h-3 text-red-500 fill-red-500 animate-pulse" />
+        </div>
       </footer>
     </main>
   );
