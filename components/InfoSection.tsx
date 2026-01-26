@@ -1,6 +1,7 @@
+
 import React from 'react';
-import { MapPin, Clock, Calendar, ExternalLink } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Calendar, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Language, translations } from '../types';
 
 interface InfoSectionProps {
@@ -16,13 +17,13 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
 
   // Decorative swirl icon
   const SwirlIcon = () => (
-    <svg width="60" height="20" viewBox="0 0 60 20" fill="none" className="text-stone-400 mb-6 mx-auto">
+    <svg width="60" height="20" viewBox="0 0 60 20" fill="none" className="text-stone-300 mb-6 mx-auto">
       <path d="M1 10C1 10 8 1 15 1C22 1 25 10 25 10C25 10 28 19 35 19C42 19 45 10 45 10C45 10 48 1 55 1C62 1 59 10 59 10" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
     </svg>
   );
 
   return (
-    <section className="py-20 px-4 md:px-12 bg-stone-50" id="dettagli">
+    <section className="py-24 px-4 md:px-12 bg-stone-50" id="dettagli">
       
       {/* 1. WELCOME SECTION (Bordered Box style) */}
       <div className="max-w-4xl mx-auto mb-20">
@@ -54,16 +55,20 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
           {/* Inner Decorative Border */}
           <div className="border border-stone-300 p-8 md:p-16 flex flex-col items-center justify-center relative">
             
+            {/* Sezione Titolo Interna */}
+            <div className="text-center mb-12 w-full">
+              <SwirlIcon /> {/* Spostata qui, in cima al blocco */}
+              <span className="uppercase tracking-[0.3em] text-[10px] text-stone-400 font-sans mb-3 block">L'Evento</span>
+              <h2 className="text-4xl md:text-6xl font-serif italic text-stone-800">Programma dell'evento</h2>
+              <div className="w-16 h-px bg-stone-200 mt-8 mx-auto"></div>
+            </div>
+
             <div className="text-center mb-12">
-               <SwirlIcon />
                <p className="font-serif italic text-2xl text-stone-600 mb-2">{t.gettingMarried}</p>
                <h3 className="text-5xl md:text-7xl font-serif text-stone-800 my-4 tracking-tighter">
                  {t.longDate}
                </h3>
                <p className="font-serif text-xl text-stone-500 uppercase tracking-widest">Civitavecchia, Roma</p>
-               <div className="mt-6 rotate-180">
-                 <SwirlIcon />
-               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full mt-4">
@@ -122,27 +127,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
               </div>
             </div>
 
+            <div className="mt-16 rotate-180">
+              <SwirlIcon />
+            </div>
           </div>
-        </motion.div>
-        
-        <motion.div 
-           initial={{ opacity: 0 }}
-           whileInView={{ opacity: 1 }}
-           viewport={{ once: true }}
-           transition={{ delay: 0.6, duration: 1 }}
-           className="mt-20 text-center max-w-lg mx-auto"
-        >
-          <AnimatePresence mode="wait">
-            <motion.p 
-              key={lang}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="font-serif text-xl text-stone-500 italic mb-6"
-            >
-              {t.quote}
-            </motion.p>
-          </AnimatePresence>
         </motion.div>
       </div>
     </section>
