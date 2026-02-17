@@ -63,7 +63,7 @@ export const translations = {
     days: "Giorni",
     hours: "Ore",
     minutes: "Minuti",
-    seconds: "Secunti",
+    seconds: "Secondi",
     contactsTitle: "Contatti",
     giftTitle: "Lista Regalo",
     giftSubtitle: "Un pensiero per noi",
