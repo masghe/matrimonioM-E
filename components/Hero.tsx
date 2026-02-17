@@ -57,7 +57,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
           <div className="relative z-10 p-8 md:p-16 flex flex-col items-center justify-center min-h-[500px] md:min-h-[620px]"> 
             
             {/* AREA NOMI FANTASIOSA */}
-            <div className="relative flex flex-col items-center py-12 px-8 md:px-20">
+            <div className="relative flex flex-col items-center py-8 px-8 md:px-20">
               
               {/* Sfondo acquerello soffuso specifico per i nomi */}
               <div className="absolute inset-0 bg-radial-gradient from-white/80 to-transparent blur-2xl -z-10 transform scale-125"></div>
@@ -86,7 +86,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.3, duration: 1 }}
-                    className="text-3xl md:text-5xl my-4 text-stone-400 font-light italic"
+                    className="text-3xl md:text-5xl my-2 text-stone-400 font-light italic"
                   >
                     &
                   </motion.span>
@@ -117,15 +117,11 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
               <div className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-stone-200/60 rounded-br-3xl"></div>
             </div>
             
-            {/* Fine Area Nomi */}
-
-            <div className="w-full max-w-[80px] h-px bg-stone-200/70 my-8"></div>
-
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.8 }}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-2 mt-2"
             >
               <div className="flex flex-col items-center">
                 <span className="font-light text-stone-700 text-lg md:text-xl font-serif italic tracking-wider">
@@ -136,7 +132,6 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
               <div className="w-1 h-1 bg-olive-500/40 rounded-full my-0.5"></div>
               
               <div className="flex flex-col items-center">
-                {/* Ripristinato colore stone-700 come 'prima' */}
                 <span className="font-semibold text-stone-700 uppercase tracking-[0.3em] text-[10px] md:text-xs">
                   CIVITAVECCHIA, ROMA
                 </span>
@@ -148,7 +143,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2.2, duration: 1 }}
-              className="mt-12 mb-4"
+              className="mt-8 mb-4"
             >
               <button
                 onClick={scrollToRsvp}

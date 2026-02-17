@@ -113,13 +113,13 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                   </motion.div>
                 </div>
                 
-                <div className="flex-grow flex flex-col items-center justify-center space-y-4 mb-6 text-center">
+                <div className="flex-grow flex flex-col items-center justify-center space-y-4 mb-4 text-center">
                   <div>
                     <h4 className="text-2xl md:text-3xl font-serif italic text-stone-800 px-4 leading-tight">{t.ceremonyLocation}</h4>
                     <p className="text-stone-500 font-sans text-xs uppercase tracking-wider">Piazza Vittorio Emanuele II</p>
                   </div>
                   {/* Spacer per pareggiare l'altezza del link sito del ricevimento su desktop */}
-                  <div className="h-[22px] hidden md:block"></div>
+                  <div className="h-[20px] hidden md:block"></div>
                 </div>
                 
                 <div className="text-center mb-8">
@@ -129,7 +129,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                 </div>
                 
                 {/* Mappa Aperta Cerimonia */}
-                <div className="space-y-4 flex flex-col items-center">
+                <div className="space-y-4 flex flex-col items-center mt-auto">
                   <div className="w-full overflow-hidden rounded-xl shadow-sm border border-stone-200 h-[250px]">
                     <iframe 
                       src={CEREMONY_EMBED} 
@@ -169,7 +169,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                   </motion.div>
                 </div>
 
-                <div className="flex-grow flex flex-col items-center justify-center space-y-4 mb-6 text-center">
+                <div className="flex-grow flex flex-col items-center justify-center space-y-4 mb-4 text-center">
                   <div>
                     <h4 className="text-2xl md:text-3xl font-serif italic text-stone-800 px-4 leading-tight">{t.receptionLocation}</h4>
                     <p className="text-stone-500 font-sans text-xs uppercase tracking-wider">Via del Tiro a Segno, 4</p>
@@ -186,7 +186,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                 </div>
 
                 {/* Mappa Aperta Ricevimento */}
-                <div className="space-y-4 flex flex-col items-center">
+                <div className="space-y-4 flex flex-col items-center mt-auto">
                   <div className="w-full overflow-hidden rounded-xl shadow-sm border border-stone-200 h-[250px]">
                     <iframe 
                       src={RECEPTION_EMBED} 
