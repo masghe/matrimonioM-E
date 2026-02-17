@@ -67,7 +67,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
         </motion.div>
       </div>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto scroll-mt-32" id="programma">
         <motion.div 
           initial={{ opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}

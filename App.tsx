@@ -118,7 +118,7 @@ const App: React.FC = () => {
                   </button>
                   
                   <button 
-                    onClick={() => scrollToSection('dettagli')}
+                    onClick={() => scrollToSection('programma')}
                     className="flex items-center gap-5 py-4 px-6 rounded-2xl text-left text-stone-700 hover:text-olive-700 hover:bg-olive-50/50 transition-all duration-300 group"
                   >
                     <div className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-white shadow-sm transition-colors border border-stone-100">
