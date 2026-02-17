@@ -91,9 +91,14 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                <p className="font-serif text-xl text-stone-700 uppercase tracking-widest">Civitavecchia, Roma</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 w-full mt-4">
+            {/* Grid Container con Divisore Centrale */}
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-0 w-full mt-4">
+              
+              {/* Linea di divisione verticale (Desktop) */}
+              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-stone-100 -translate-x-1/2"></div>
+
               {/* Cerimonia */}
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full md:pr-12 lg:pr-16">
                 <div className="flex flex-col items-center gap-2 mb-6">
                   <div className="flex items-center justify-center gap-2 text-olive-600">
                     <Calendar className="w-4 h-4" />
@@ -118,7 +123,6 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                     <h4 className="text-2xl md:text-3xl font-serif italic text-stone-800 px-4 leading-tight">{t.ceremonyLocation}</h4>
                     <p className="text-stone-500 font-sans text-xs uppercase tracking-wider">Piazza Vittorio Emanuele II</p>
                   </div>
-                  {/* Spacer per pareggiare l'altezza del link sito del ricevimento su desktop */}
                   <div className="h-[20px] hidden md:block"></div>
                 </div>
                 
@@ -128,7 +132,6 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                   </p>
                 </div>
                 
-                {/* Mappa Aperta Cerimonia */}
                 <div className="space-y-4 flex flex-col items-center mt-auto">
                   <div className="w-full overflow-hidden rounded-xl shadow-sm border border-stone-200 h-[250px]">
                     <iframe 
@@ -149,7 +152,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
               </div>
 
               {/* Ricevimento */}
-              <div className="flex flex-col h-full md:border-l md:border-stone-100 md:pl-16">
+              <div className="flex flex-col h-full md:pl-12 lg:pl-16">
                 <div className="flex flex-col items-center gap-2 mb-6">
                   <div className="flex items-center justify-center gap-2 text-olive-600">
                     <MapPin className="w-4 h-4" />
@@ -185,7 +188,6 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                   </p>
                 </div>
 
-                {/* Mappa Aperta Ricevimento */}
                 <div className="space-y-4 flex flex-col items-center mt-auto">
                   <div className="w-full overflow-hidden rounded-xl shadow-sm border border-stone-200 h-[250px]">
                     <iframe 
@@ -205,6 +207,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ lang }) => {
                 </div>
               </div>
             </div>
+            
             <div className="mt-16 rotate-180">
               <SwirlIcon />
             </div>
